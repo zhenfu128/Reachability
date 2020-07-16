@@ -25,7 +25,7 @@ g = grid(np.array([3, math.pi/18, 0, -2*math.pi]), np.array([10, math.pi/3, math
 my_car = tailsitter()
 
 #Use the grid to initualize initial value function
-Initial_value_f = ShapeRectangle(g, np.array([5.5, math.pi/18, math.pi/18, 0]), np.array([6, math.pi/6, math.pi/4, 0]))
+Initial_value_f = ShapeRectangle(g, np.array([5.5, math.pi/18, math.pi/18, -math.pi/18]), np.array([6, math.pi/6, math.pi/4, math.pi/18]))
 
 # look-back length and time step
 lookback_length = 0.5

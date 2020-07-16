@@ -24,7 +24,7 @@ def plot_isosurface(grid, V, dims_plot):
             value=V.flatten(),
             colorscale='jet',
             isomin=-10,
-            surface_count=1,
+            surface_count=3,
             isomax=0,
             caps=dict(x_show=True, y_show=True)
         ))
@@ -33,7 +33,7 @@ def plot_isosurface(grid, V, dims_plot):
         #print(V)
         #V.to_excel("./output/pvuv_pandas.xls", index=False)
 
-        V = V1[:, :, :, 30]
+        V = V1[:, :, :, 25]
 
         print("Plotting beautiful plots. Please wait\n")
         fig = go.Figure(data=go.Isosurface(
@@ -50,7 +50,7 @@ def plot_isosurface(grid, V, dims_plot):
         fig.show()
         print("Please check the plot on your browser.")
 
-        V = V1[:, :, :, 20]
+        V = V1[:, :, :, 25]
 
         print("Plotting beautiful plots. Please wait\n")
         fig = go.Figure(data=go.Isosurface(
@@ -59,8 +59,8 @@ def plot_isosurface(grid, V, dims_plot):
             z=mg_Z.flatten(),
             value=V.flatten(),
             colorscale='jet',
-            isomin=0,
-            surface_count=1,
+            isomin=-10,
+            surface_count=5,
             isomax=0,
             caps=dict(x_show=True, y_show=True)
         ))
