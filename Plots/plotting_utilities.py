@@ -23,7 +23,7 @@ def plot_isosurface(grid, V, dims_plot):
             z=mg_Z.flatten(),
             value=V.flatten(),
             colorscale='jet',
-            isomin=0,
+            isomin=-10,
             surface_count=1,
             isomax=0,
             caps=dict(x_show=True, y_show=True)

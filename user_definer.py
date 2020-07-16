@@ -72,7 +72,7 @@ g = grid(np.array([3, math.pi/18, 0, -2*math.pi]), np.array([10, math.pi/3, math
 my_car = tailsitter()
 
 #Use the grid to initualize initial value function
-Initial_value_f = ShapeRectangle(g, np.array([5, math.pi/18, math.pi/18, -math.pi/18]), np.array([6, math.pi/6, math.pi/4, math.pi/18]))
+Initial_value_f = ShapeRectangle(g, np.array([5.5, math.pi/18, math.pi/18, 0]), np.array([6, math.pi/6, math.pi/4, 0]))
 
 # look-back length and time step
 lookback_length = 0.5
@@ -83,7 +83,7 @@ tau = np.arange(start = 0, stop = lookback_length + small_number, step = t_step)
 print("Welcome to optimized_dp \n")
 
 # Use the following variable to specify the characteristics of computation
-compMethod = "minVWithVInit"
+compMethod = "none"
 my_object = my_car
 my_shape = Initial_value_f
 

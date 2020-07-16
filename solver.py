@@ -34,7 +34,7 @@ def main():
     print("Initializing\n")
 
     V_0 = hcl.asarray(my_shape)                             #value function 
-    V_1 = hcl.asarray(np.ones(tuple(g.pts_each_dim)))
+    V_1 = hcl.asarray(np.zeros(tuple(g.pts_each_dim)))
     l0  = hcl.asarray(my_shape)
     
     temp = V_0.asnumpy()
