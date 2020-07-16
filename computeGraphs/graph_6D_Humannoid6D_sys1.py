@@ -1,8 +1,8 @@
 import heterocl as hcl
 import numpy as np
 import time
-from computeGraphs.CustomGraphFunctions import *
-from user_definer import *
+from computeGraphs.CustomGraphFunctions_Humannoid6D_sys1 import *
+from para_set_Humannoid6D_sys1 import *
 
 ##############################  6D DERIVATIVE FUNCTIONS #############################
 def spa_derivX6_6d(i, j, k, l, m, n, V, g):  # Left -> right == Outer Most -> Inner Most

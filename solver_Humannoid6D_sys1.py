@@ -3,13 +3,12 @@ import numpy as np
 import time
 #import plotly.graph_objects as go
 
-from computeGraphs.CustomGraphFunctions import *
-from Plots.plotting_utilities import *
-from user_definer import *
+from computeGraphs.CustomGraphFunctions_Humannoid6D_sys1 import *
+from Plots.plotting_utilities_Humannoid6D_sys1 import *
+from para_set_Humannoid6D_sys1 import *
 from argparse import ArgumentParser
-from computeGraphs.graph_4D import *
-from computeGraphs.graph_5D import *
-from computeGraphs.graph_6D import *
+
+from computeGraphs.graph_6D_Humannoid6D_sys1 import *
 import scipy.io as sio
 
 import pandas as pd
@@ -37,16 +36,7 @@ def main():
     V_1 = hcl.asarray(np.zeros(tuple(g.pts_each_dim)))
     l0  = hcl.asarray(my_shape)
     
-    temp = V_0.asnumpy()
-    data = 0
-    for i in range(0,50):
-        for j in range(0,50):
-            for k in range(0, 50):
-                for m in range(0, 50):
-                    if(temp[i][j][k][m] < 0):
-                        data = data + 1  
-    print(data, "\n")
-    # plot_isosurface(g, V_0.asnumpy(), [0, 1, 3])
+ 
     #probe = hcl.asarray(np.zeros(tuple(g.pts_each_dim)))
     #obstacle = hcl.asarray(cstraint_values)
 
@@ -131,16 +121,7 @@ def main():
     if args.plot:
         plot_isosurface(g, V_0.asnumpy(), [0, 1, 2])
 
-    temp = V_0.asnumpy()
-    data = 0
-    for i in range(0,50):
-        for j in range(0,50):
-            for k in range(0, 50):
-                for m in range(0, 50):
-                    if(temp[i][j][k][m] < 0):
-                        data = data + 1
-    print(data)
-        # sio.savemat("V.mat", {'V': V_0.asnumpy()})
+ 
     # print(V_1.asnumpy()[:,:,:,25])
     # yy = pd.DataFrame(V_1)
     # yy.to_excel("./output/pvuv_pandas.xls", index=False)

@@ -1,8 +1,9 @@
 import heterocl as hcl
 import numpy as np
 import time
-from computeGraphs.CustomGraphFunctions import *
-from user_definer import *
+from computeGraphs.CustomGraphFunctions_DubinsCar4D import *
+from para_set_DubinsCar4D import *
+
 
 ################## 4D SPATIAL DERIVATIVE FUNCTION #################
 

@@ -1,7 +1,8 @@
 import heterocl as hcl
 import numpy as np
 import time
-from user_definer import *
+
+from para_set_Humannoid6D_sys1 import *
 # Custom function
 
 def my_min(a,b):
