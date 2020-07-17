@@ -19,7 +19,7 @@ import math
 
 - Run
 """
-g = grid(np.array([3, math.pi/18, 0, -2*math.pi]), np.array([10, math.pi/3, math.pi/3, 2*math.pi]), 4, np.array([50,50,50,50]), [3])
+g = grid(np.array([1, 0, 0, -2*math.pi]), np.array([10, math.pi/2, math.pi/2, 2*math.pi]), 4, np.array([50,50,50,50]), [3])
 
 # Define my object
 my_car = tailsitter()
@@ -36,7 +36,7 @@ tau = np.arange(start = 0, stop = lookback_length + small_number, step = t_step)
 print("Welcome to optimized_dp \n")
 
 # Use the following variable to specify the characteristics of computation
-compMethod = "minVWithVInit"
+compMethod = "minVWithVInit"  # minVWithVInit, minVWithV0, maxVWithVInit, maxVWithV0
 my_object = my_car
 my_shape = Initial_value_f
 

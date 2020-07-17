@@ -31,20 +31,26 @@ def main():
     ################# INITIALIZE DATA TO BE INPUT INTO EXECUTABLE ##########################
 
     print("Initializing\n")
-
+    
     V_0 = hcl.asarray(my_shape)                             #value function 
     V_1 = hcl.asarray(np.zeros(tuple(g.pts_each_dim)))
     l0  = hcl.asarray(my_shape)
+    u1  = hcl.asarray(np.zeros(tuple(g.pts_each_dim)))
+    u2  = hcl.asarray(np.zeros(tuple(g.pts_each_dim)))   
     
-    temp = V_0.asnumpy()
-    data = 0
-    for i in range(0,50):
-        for j in range(0,50):
-            for k in range(0, 50):
-                for m in range(0, 50):
-                    if(temp[i][j][k][m] < 0):
-                        data = data + 1  
-    print(data, "\n")
+
+
+    
+    # caculate point below zero
+    # temp = V_0.asnumpy()
+    # data = 0
+    # for i in range(0,50):
+    #     for j in range(0,50):
+    #         for k in range(0, 50):
+    #             for m in range(0, 50):
+    #                 if(temp[i][j][k][m] < 0):
+    #                     data = data + 1  
+    # print(data, "\n")
     # plot_isosurface(g, V_0.asnumpy(), [0, 1, 3])
     #probe = hcl.asarray(np.zeros(tuple(g.pts_each_dim)))
     #obstacle = hcl.asarray(cstraint_values)
@@ -83,6 +89,12 @@ def main():
     #print(solve_pde)
 
     ################ USE THE EXECUTABLE ############
+    a = (g.pts_each_dim).tolist()
+    a.append(1000)
+    u1_t = np.zeros(a)
+    u2_t = np.zeros(a)
+    count = 0
+    count_time = 0
     # Variables used for timing
     execution_time = 0
     lookback_time = 0
@@ -99,7 +111,7 @@ def main():
 
              # Run the execution and pass input into graph
              if g.dims == 4:
-                solve_pde(V_1, V_0, list_x1, list_x2, list_x3, list_x4, t_minh, l0)
+                solve_pde(V_1, V_0, list_x1, list_x2, list_x3, list_x4, t_minh, l0, u1, u2)
              if g.dims == 5:
                 solve_pde(V_1, V_0, list_x1, list_x2, list_x3, list_x4, list_x5 ,t_minh, l0)
              if g.dims == 6:
@@ -110,13 +122,18 @@ def main():
              # Calculate computation time
              execution_time += time.time() - start
              
-            
+             
              
              # Some information printing
              print(t_minh)
              print("Computational time to integrate (s): {:.5f}".format(time.time() - start))
              # Saving data into disk
-
+             u1_t[:,:,:,:,count] = u1.asnumpy()
+             u2_t[:,:,:,:,count] = u2.asnumpy()
+            #  print(count_time)
+             if tNow>count_time:
+                 count += 1
+                 count_time += 1/1000
 
     # Time info printing
     print("Total kernel time (s): {:.5f}".format(execution_time))
@@ -139,7 +156,9 @@ def main():
                     if(temp[i][j][k][m] < 0):
                         data = data + 1
     print(data)
-        # sio.savemat("V.mat", {'V': V_0.asnumpy()})
+    sio.savemat("u.mat", {'V': u1.asnumpy()})
+    np.save("u_opt1.npy", u1_t)
+    np.save("u_opt2.npy", u2_t)
     # print(V_1.asnumpy()[:,:,:,25])
     # yy = pd.DataFrame(V_1)
     # yy.to_excel("./output/pvuv_pandas.xls", index=False)
