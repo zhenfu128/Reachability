@@ -30,7 +30,7 @@ x4_dot = rou*s*c/2/Jxx*x1*x1*(Cm0+Cm1*x2) + Cm2*rou*c*x1*x1/2/Jxx*u2;
 
 """
 class tailsitter:
-    def __init__(self, x=[0,0,0,0], uMin = [0,-0.5], uMax = [10,0.5], \
+    def __init__(self, x=[0,0,0,0], uMin = [0,-1], uMax = [10,1], \
                  dMin = [0,0], dMax = [0,0], uMode = "Min",dMode = "Max"):
         self.x = x
         self.uMax = uMax
@@ -47,14 +47,14 @@ class tailsitter:
         self.g      = 9.81
         self.c      = 0.64
         self.Jxx    = 0.0064
-        self.A      = self.rou * self.s / 2 / self.m
+        self.A      = self.rou * self.s / 2.0 / self.m
         self.Cd0    = -0.0752
         self.Cd1    = 1.264
         self.Cd2    = 0.010*self.Cd1
-        self.Cm0    = 0
+        self.Cm0    = 0.0
         self.Cm1    = -0.2228
         self.Cm2    = 2*self.Cm1
-
+        self.d      = 412.9/10000.0
 
 
     def opt_ctrl(self, t, state, spat_deriv):
@@ -80,9 +80,14 @@ class tailsitter:
         para_u1 = hcl.scalar(0, "para_u1")
         para_u2 = hcl.scalar(0, "para_u2")
 
+        SumUU = hcl.scalar(0, "SumUU")
+        SumUL = hcl.scalar(0, "SumUL")
+        SumLU = hcl.scalar(0, "SumLU")
+        SumLL = hcl.scalar(0, "SumLL")
+
         #state-dependent constants
         with hcl.if_(state[1] < 0.7854):
-            self.Cl0    = 0
+            self.Cl0    = 0.0
             self.Cl1    = 1.381
             self.Cl2    = 0.1500*self.Cl1
 
@@ -93,20 +98,36 @@ class tailsitter:
 
 
         with hcl.if_(self.uMode == "Min"):
+
             para_u1[0] = spat_deriv[0]*hcl.cos(state[1])/self.m - spat_deriv[1]*hcl.sin(state[1])/self.m/state[0]
-            para_u2[0] = -spat_deriv[0]*self.A*self.Cd2*state[0]*state[0] - spat_deriv[1]*self.A*self.Cl2*state[0] + \
-                      spat_deriv[3]*self.Cm2*self.s*self.rou*self.c/2/self.Jxx*state[0]*state[0] 
+            para_u2[0] = -spat_deriv[0]*self.A*self.Cd2*state[0]*state[0] - spat_deriv[1]*self.A*self.Cl2*state[0] 
+                      
             
-            #find optimal u1
-            with hcl.if_(para_u1[0] > 0):
+            SumUU[0] = para_u1[0]*self.uMax[0] + para_u2[0]*self.uMax[1] + \
+                       spat_deriv[3]*self.rou*self.s*self.c/2/self.Jxx*(state[0]*state[0]+2*self.uMin[0]/self.rou/self.d)*self.Cm2*self.uMax[1]
+            SumLU[0] = para_u1[0]*self.uMin[0] + para_u2[0]*self.uMax[1] + \
+                       spat_deriv[3]*self.rou*self.s*self.c/2/self.Jxx*(state[0]*state[0]+2*self.uMax[0]/self.rou/self.d)*self.Cm2*self.uMax[1]
+            SumUL[0] = para_u1[0]*self.uMax[0] + para_u2[0]*self.uMin[1] + \
+                       spat_deriv[3]*self.rou*self.s*self.c/2/self.Jxx*(state[0]*state[0]+2*self.uMax[0]/self.rou/self.d)*self.Cm2*self.uMin[1]
+            SumLL[0] = para_u1[0]*self.uMin[0] + para_u2[0]*self.uMin[1] + \
+                       spat_deriv[3]*self.rou*self.s*self.c/2/self.Jxx*(state[0]*state[0]+2*self.uMin[0]/self.rou/self.d)*self.Cm2*self.uMin[1]
+            #find optimal u1 & u2
+            with hcl.if_(SumUU[0] > SumLU[0]):
                 opt_u1[0] = self.uMin[0]
-            with hcl.if_(para_u1[0] < 0):
-                opt_u1[0] = self.uMax[0]
-            #find optimal u2
-            with hcl.if_(para_u2[0] > 0):
-                opt_u2[0] = self.uMin[1]
-            with hcl.if_(para_u2[0] < 0):
                 opt_u2[0] = self.uMax[1]
+                SumUU[0] = SumLU[0]
+            with hcl.elif_(SumUU[0] < SumLU[0]):
+                opt_u1[0] = self.uMax[0]
+                opt_u2[0] = self.uMax[1]
+
+            with hcl.if_(SumUU[0] > SumUL[0]):
+                opt_u1[0] = self.uMax[0]
+                opt_u2[0] = self.uMin[1]
+                SumUU[0] = SumUL[0]
+
+            with hcl.if_(SumUU[0] > SumLL[0]):
+                opt_u1[0] = self.uMin[0]
+                opt_u2[0] = self.uMin[1]
 
         
         # hcl.print(para_u1)
@@ -151,7 +172,8 @@ class tailsitter:
         x2_dot[0] = -self.A*state[0]*(self.Cl0+self.Cl1*state[1]) + state[3] + self.g/state[0]*hcl.cos(state[1]-state[2]) - \
                     hcl.sin(state[1])/self.m/state[0]*opt_u[0] - self.A*state[0]*self.Cl2*opt_u[1]
         x3_dot[0] = state[3]
-        x4_dot[0] = self.rou*self.s*self.c/2/self.Jxx*state[0]*state[0]*(self.Cm0+self.Cm1*state[1]+self.Cm2*opt_u[1])
+        x4_dot[0] = self.rou*self.s*self.c/2/self.Jxx*state[0]*state[0]*(self.Cm0+self.Cm1*state[1]) + \
+                    self.rou*self.s*self.c/2/self.Jxx*(state[0]*state[0]+2*opt_u[0]/self.rou/self.d)*self.Cm2*opt_u[1]
         
         return (x1_dot[0], x2_dot[0], x3_dot[0], x4_dot[0])
 

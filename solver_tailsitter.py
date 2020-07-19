@@ -127,9 +127,11 @@ def main():
              # Some information printing
              print(t_minh)
              print("Computational time to integrate (s): {:.5f}".format(time.time() - start))
+             
              # Saving data into disk
              u1_t[:,:,:,:,count] = u1.asnumpy()
              u2_t[:,:,:,:,count] = u2.asnumpy()
+            
             #  print(count_time)
              if tNow>count_time:
                  count += 1
