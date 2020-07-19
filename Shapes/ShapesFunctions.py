@@ -1,5 +1,5 @@
 import numpy as np
-import heterocl as hcl
+
 # This function creates a cyclinderical shape
 def CyclinderShape3D(grid, ignore_dim, center, radius):
     data = np.zeros(grid.pts_each_dim)
@@ -73,16 +73,23 @@ def Rectangle6D(grid):
     return data
     
 def ShapeRectangle(grid, target_min, target_max):
-    temp = -10*np.ones(grid.pts_each_dim)
-    data = 0
+    data = np.maximum(grid.vs[0] - target_max[0], -grid.vs[0] + target_min[0])
     
-    for i in range(0, grid.dims):
-        temp = np.maximum(temp,  grid.vs[i] - target_max[i])
-        temp = np.maximum(temp, -grid.vs[i] + target_min[i])
-        # print("%d\n\n\n\n\n\n"%i,temp)
+    for i in range(1, grid.dims):
+        data = np.maximum(data,  grid.vs[i] - target_max[i])
+        data = np.maximum(data, -grid.vs[1] + target_min[i])
     
-   
-    return temp
+    return data
 
 def Rect_around_point(grid, target_point):
     return ShapeRectangle(grid, target_point - 1.5*grid.dx, target_point + 1.5*grid.dx)
+
+
+def VHLIP_init(grid, delta):
+    data = grid.vs[0]**2 - 0.05**2
+    data = np.maximum(data,  grid.vs[1]**2 - delta**2)
+    data = np.maximum(data,  grid.vs[2]**2 - 0.05**2)
+    data = np.maximum(data,  grid.vs[3]**2 - delta**2)
+    data = np.maximum(data,  (grid.vs[4]-1)**2 - delta**2)
+    data = np.maximum(data,  grid.vs[5]**2 - delta**2)
+    return data

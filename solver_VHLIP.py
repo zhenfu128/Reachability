@@ -3,13 +3,11 @@ import numpy as np
 import time
 # import plotly.graph_objects as go
 
-from computeGraphs.CustomGraphFunctions import *
-from Plots.plotting_utilities import *
+from computeGraphs.CustomGraphFunctions_Humannoid6D_sys1 import *
+from Plots.plotting_utilities_Humannoid6D_sys1 import *
 from param_set_VHLIP import *
 from argparse import ArgumentParser
-from computeGraphs.graph_4D import *
-from computeGraphs.graph_5D import *
-from computeGraphs.graph_6D import *
+from computeGraphs.graph_6D_Humannoid6D_sys1 import *
 import scipy.io as sio
 
 import scipy.io as sio
